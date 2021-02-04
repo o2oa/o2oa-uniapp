@@ -14,11 +14,6 @@
 		},
 	    onLaunch() {
 			console.log('App onLaunch')
-			this.o2.Actions.loadO2Distribute().then(res=> {
-				console.log('加载distribute。。。。')
-			}).catch(err => {
-				console.log(err)
-			})
 		},
 		onShow: function() {
 			console.log('App Show')
@@ -31,4 +26,7 @@
 
 <style>
 	/*每个页面公共css */
+	@import "colorui/main.css";
+	@import "colorui/icon.css";
+	@import "static/app.css";
 </style>

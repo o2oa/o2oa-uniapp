@@ -8,18 +8,19 @@
 	export default {
 		data() {
 			return {
-				workid: '',
+				id: '',
 				url: ''
 			}
 		},
 		onLoad(options) {
-			var workid = options.workid
+			var id = options.id
+			this.id = id
 			var title = options.title
 			uni.setNavigationBarTitle({
 				title: title
 			})
 			let token = uni.getStorageSync(this.o2.config.tokenKey);
-			this.url = this.o2.Actions.getWebBaseUrl() + '/x_desktop/workmobilewithaction.html?workid='+workid+'&x-token='+token
+			this.url = this.o2.Actions.getWebBaseUrl() + '/x_desktop/cmsdocMobile.html?id='+id+'&x-token='+token
 		},
 		methods: {
 			

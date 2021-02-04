@@ -2,7 +2,8 @@
 var o2 = {
 	config: {
 		tokenKey: 'o2-token',
-		userKey : 'o2-user'
+		userKey : 'o2-user',
+		distributeKey: '02-distribute'
 	},
 	toast: function(message) {
 		uni.showToast({
@@ -12,7 +13,7 @@ var o2 = {
 	},
 	showLoading: function() {
 		uni.showLoading({
-			title: '加载中...'
+			title: 'Loading...'
 		})
 	},
 	hideLoading: function() {
@@ -35,7 +36,84 @@ var o2 = {
 						if (o2Req.debug) {
 							console.log(res)
 						}
-						resolve(res.data)
+						if (res.statusCode === 500) {
+							if (res.data && res.data.message) {
+								o2.toast(res.data.message)
+							}
+							reject(res.data)
+						}else {
+							resolve(res.data)
+						}
+					},
+					fail: (err) => {
+						console.log(err)
+						reject(err)
+					}
+				})
+			})
+		},
+		/**
+		 * 用Promise封装 上传文件的请求
+		 * @param {Object} o2FileReq 
+		 * 	{url: '', method: '',name: '', filePath: {}, data: {} }
+		 */
+		o2Upload: function(o2FileReq) {
+			return new Promise(function(resolve, reject) {
+				let token = uni.getStorageSync(o2.config.tokenKey);
+				var header = {}
+				if (token) {
+					header['x-token'] = token
+				}
+				if (o2FileReq.method) {
+					if (o2FileReq.method.toLowerCase() === 'put') {
+						header['X-HTTP-Method-Override'] = 'PUT'
+					}
+					if (o2FileReq.method.toLowerCase() === 'delete') {
+						header['X-HTTP-Method-Override'] = 'DELETE'
+					}
+				}
+				console.log(header)
+				uni.uploadFile({
+					url: o2FileReq.url,
+					filePath: o2FileReq.filePath,
+					name: 'file', // o2FileReq.name todo目前都是file
+					formData: o2FileReq.data,
+					success: (res) => {
+						if (o2FileReq.debug) {
+							console.log(res)
+						}
+						if (res.statusCode === 500) {
+							if (res.data && res.data.message) {
+								o2.toast(res.data.message)
+							}
+							reject(res.data)
+						}else {
+							resolve(res.data)
+						}
+					},
+					fail: (err) => {
+						console.log(err)
+						reject(err)
+					}
+				})
+			})
+		},
+		o2Download: function(url) {
+			let token = uni.getStorageSync(o2.config.tokenKey);
+			var header = {}
+			if (token) {
+				header = {'x-token': token}
+			}
+			return new Promise(function(resolve, reject) {
+				uni.downloadFile({
+					url: url,
+					header: header,
+					success: (res) => {
+						if (res.statusCode === 200) {
+							resolve(res.tempFilePath)
+						}else {
+							reject(res.data? res.data : null)
+						}
 					},
 					fail: (err) => {
 						console.log(err)
@@ -55,6 +133,7 @@ var o2 = {
 				o2.Actions.o2Request(o2req).then(res => {
 					if (res.data) {
 						getApp().globalData.o2Distribute = res.data
+						uni.setStorageSync(o2.config.distributeKey, res.data)
 						resolve(true)
 					}else {
 						console.log('没有返回 distribute 数据！')
@@ -79,7 +158,7 @@ var o2 = {
 						method: 'GET',
 						header: {},
 						data: {},
-						debug: true
+						debug: false
 					}
 					o2.Actions.o2Request(o2req).then(json => {
 						var jaxrs = json.jaxrs
@@ -114,9 +193,31 @@ var o2 = {
 			})
 		},
 		'getModuleHost': function(root) {
-			var module = getApp().globalData.o2Distribute.assembles[root]
-			var o2server = getApp().globalData.o2server
-			return o2server.httpProtocol + '://' + module['host'] + ':' + module['port']+ module['context'];
+			var module = null
+			if (getApp().globalData.o2Distribute) {
+				module = getApp().globalData.o2Distribute.assembles[root]
+			}else {
+				var o2Distribute= uni.getStorageSync(o2.config.distributeKey)
+				if (o2Distribute) {
+					getApp().globalData.o2Distribute = o2Distribute
+					module = o2Distribute.assembles[root]
+				}
+			}
+			if (module) {
+				var o2server = getApp().globalData.o2server
+				return o2server.httpProtocol + '://' + module['host'] + ':' + module['port']+ module['context'];	
+			}else {
+				return null
+			}
+		},
+		getWebBaseUrl: function () {
+			if (getApp().globalData.o2Distribute) {
+				let o2server = getApp().globalData.o2server
+				let webServer = getApp().globalData.o2Distribute.webServer
+				return o2server.httpProtocol + "://" + webServer["host"] + ":" + webServer["port"]
+			} else {
+				return null
+			}
 		},
 		'getCenterUrl' : function() {
 			var o2server = getApp().globalData.o2server
@@ -188,20 +289,33 @@ var o2 = {
 						url = url.replace(reg, encodeURI(parameter[key]));
 					}
 				}
-				// 当前登录用户的token 需要在登录成功后设置
-				let token = uni.getStorageSync(o2.config.tokenKey);
-				var header = {}
-				if (token) {
-					header = {'x-token': token}
+				if (file) { //有file 表示是上传文件类型的请求
+					console.log('上传文件')
+					console.log(file)
+					var o2FileReq = {
+						url : url,
+						method: service.method,
+						data: data,
+						filePath: file, //文件路径
+						debug: debug
+					}
+					return o2.Actions.o2Upload(o2FileReq)
+				}else {
+					// 当前登录用户的token 需要在登录成功后设置
+					let token = uni.getStorageSync(o2.config.tokenKey);
+					var header = {}
+					if (token) {
+						header = {'x-token': token}
+					}
+					var o2req = {
+						url : url,
+						method: service.method,
+						header: header,
+						data: data,
+						debug: debug
+					}
+					return o2.Actions.o2Request(o2req)
 				}
-				var o2req = {
-					url : url,
-					method: service.method,
-					header: header,
-					data: data,
-					debug: debug
-				}
-				return o2.Actions.o2Request(o2req)
 			}
 		}
 		

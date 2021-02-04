@@ -1,0 +1,55 @@
+<template>
+	<view class="o2-dialog-mask" >
+		<view class="o2-dialog-window" >
+			<image src="../../static/close.png" class="iconfont" @click="close"></image>
+			<slot></slot>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		created() {
+			const vm = this;
+			uni.$on('o2-popup', (data) => {
+				console.log('popup 接收到消息')
+				 console.log(data)
+			})
+		},
+		beforeDestroy() {
+			uni.$off('o2-popup')
+		},
+		methods: {
+			close() {
+				uni.$emit('o2-mine', {
+					close: true
+				})
+			}
+		}
+	}
+</script>
+
+<style lang="scss" scoped>
+.iconfont {
+	position: fixed;
+	right: 30rpx;
+	top: 20rpx;
+	font-size: 35rpx;
+	color: #8a8a8a;
+	width: 50rpx;
+	height: 50rpx;
+}
+.o2-dialog-mask {
+	position: fixed;
+	top: 200rpx;
+	left: 50rpx;
+	right: 50rpx;
+	bottom: 200rpx;
+	background-color: #FFFFFF;
+}
+</style>

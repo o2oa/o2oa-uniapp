@@ -1,0 +1,38 @@
+.bg-o2-red {
+	background-color: #FB4747;
+	color: white;
+}
+
+
+/* 需要引入colorui */
+.cu-form-group .o2-can-click {
+	flex: 1;
+	padding-right: 40upx;
+	overflow: hidden;
+	position: relative;
+}
+.cu-form-group .o2-can-click .picker {
+	line-height: 100upx;
+	min-height: 100upx;
+	font-size: 28upx;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	width: 100%;
+	text-align: right;
+}
+.cu-form-group .o2-can-click .picker::after {
+	font-family: cuIcon;
+	display: block;
+	content: "\e6a3";
+	position: absolute;
+	font-size: 34upx;
+	color: #8799a3;
+	line-height: 100upx;
+	width: 60upx;
+	text-align: center;
+	top: 0;
+	bottom: 0;
+	right: -20upx;
+	margin: auto;
+}

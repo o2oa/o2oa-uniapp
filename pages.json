@@ -13,7 +13,7 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "uni-app",
+				"navigationBarTitleText": "首页",
 				"enablePullDownRefresh": true
 			}
 		}
@@ -21,17 +21,60 @@
             "path" : "pages/work/work",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "",
+                "navigationBarTitleText": "工作",
                 "enablePullDownRefresh": false
             }
             
         }
 		
+        ,{
+            "path" : "pages/mine/mine",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "我的",
+                "enablePullDownRefresh": false
+			}
+        },
+		{
+		    "path" : "pages/mine/avatar",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "裁剪",
+		        "enablePullDownRefresh": false
+			}
+		}
+		
+        ,{
+            "path" : "pages/cms/cms",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "信息",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
+	"tabBar": {
+	    "color": "#666666",
+	    "selectedColor": "#FB4747",
+	    "borderStyle": "black",
+	    "backgroundColor": "#ffffff",
+	    "list": [{
+	        "pagePath": "pages/index/index",
+	        "iconPath": "static/img/icon_main_index_logo.png",
+	        "selectedIconPath": "static/img/icon_main_index_logo_red.png",
+	        "text": "首页"
+	    }, {
+	        "pagePath": "pages/mine/mine",
+	        "iconPath": "static/img/icon_main_my.png",
+	        "selectedIconPath": "static/img/icon_main_my_red.png",
+	        "text": "我的"
+	    }]
+	},
 	"globalStyle": {
-		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
-		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
+		"navigationBarTextStyle": "white",
+		"navigationBarTitleText": "O2OA",
+		"navigationBarBackgroundColor": "#FB4747",
+		"backgroundColor": "#FB4747"
 	}
 }

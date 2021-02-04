@@ -16,7 +16,7 @@
 				<text :class="loginMode == 'password' ? 'mode-text mode-active' : 'mode-text'" @click="changeMode">密码登录</text>
 			</view>
 			<input type="text" placeholder="手机号/用户名" :class="usernameFocus?'input input-active':'input'" @focus="bindUserNameFocus" v-model="username"/>
-			<input v-if="loginMode == 'password'" type="text" placeholder="密码" :class="passwordFocus?'input input-active':'input'" @focus="bindPasswordFocus" v-model="password"/>
+			<input v-if="loginMode == 'password'" type="password" placeholder="密码" :class="passwordFocus?'input input-active':'input'" @focus="bindPasswordFocus" v-model="password"/>
 			<view class="code-input" v-if="loginMode == 'code'">
 				<input  type="text" placeholder="验证码" :class="codeFocus?'input-active':''" @focus="bindCodeFocus" v-model="code"/>
 				<button :class="sending? 'code-btn-sending':'code-btn'" @click="getCode()">{{getCodeText}}</button>
@@ -46,36 +46,53 @@
 			}
 		},
 		onLoad: function() {
-			// 检查登录情况 
-			let token = uni.getStorageSync(this.o2.config.tokenKey);
-			if (token) {
-				this.o2.Actions.load("x_organization_assemble_authentication").then(actions=> {
-					var authentication = actions.AuthenticationAction
-					return authentication.who()
-				}).then(res => {
-					if (res.data) {
-						if (res.data.name === 'anonymous') {
-							console.log('token过期')
-							uni.removeStorageSync(this.o2.config.userKe)
-							uni.removeStorageSync(this.o2.config.tokenKey)
-							this.needLogin = true
+			this.o2.Actions.loadO2Distribute().then(res=> {
+				console.log('加载distribute。。。。')
+				// 检查登录情况
+				let token = uni.getStorageSync(this.o2.config.tokenKey);
+				if (token) {
+					this.o2.Actions.load("x_organization_assemble_authentication").then(actions=> {
+						var authentication = actions.AuthenticationAction
+						return authentication.who()
+					}).then(res => {
+						if (res.data) {
+							if (res.data.name === 'anonymous') {
+								console.log('token过期')
+								uni.removeStorageSync(this.o2.config.userKey)
+								uni.removeStorageSync(this.o2.config.tokenKey)
+								this.needLogin = true
+							}else {
+								uni.setStorageSync(this.o2.config.userKey, res.data)
+								uni.setStorageSync(this.o2.config.tokenKey, res.data.token)
+								this.gotoMain()
+							}
 						}else {
-							uni.setStorageSync(this.o2.config.userKey, res.data)
-							uni.setStorageSync(this.o2.config.tokenKey, res.data.token)
-							this.gotoMain()
+							console.log('无法获取认证信息！')
+							this.needLogin = true
 						}
-					}else {
-						console.log('无法获取认证信息！')
+					}).catch(err => {
+						console.log(err)
 						this.needLogin = true
-					}
-				}).catch(err => {
-					console.log(err)
+					})
+				}else {
+					console.log('未登录')
 					this.needLogin = true
-				})
-			}else {
-				console.log('未登录')
-				this.needLogin = true
-			}
+				}
+			}).catch(err => {
+				console.log(err)
+				// this.o2.toast('连接服务器失败！')
+				uni.showModal({
+				    title: '提示',
+				    content: '连接服务器失败！',
+					showCancel: false,
+				    success: function (res) {
+				        if (res.confirm) {
+				            console.log('用户点击确定');
+				        }
+				    }
+				});
+			})
+			
 		},
 		methods: {
 			// 切换登录方式
@@ -153,9 +170,6 @@
 						}else {
 							this.o2.toast('登录失败！')
 						}
-					}).catch(err => {
-						console.log(err)
-						this.o2.toast('登录失败！')
 					})
 				}else {
 					let password = this.password
@@ -166,21 +180,18 @@
 					this.o2.Actions.load("x_organization_assemble_authentication").then(actions => {
 						let data = {
 							credential: username,
-							password: code
+							password: password
 						}
 						return actions.AuthenticationAction.login(data)
 					}).then(res => {
 						let user = res.data
-						if (user.token && user.token != '') {
+						if (user && user.token && user.token != '') {
 							uni.setStorageSync(this.o2.config.userKey, user)
 							uni.setStorageSync(this.o2.config.tokenKey, user.token)
 							this.gotoMain()
 						}else {
-							this.o2.toast('登录失败！')
+							this.o2.toast(res.message || '登录失败！')
 						}
-					}).catch(err => {
-						console.log(err)
-						this.o2.toast('登录失败！')
 					})
 				}
 			},
@@ -209,6 +220,10 @@
 </script>
 
 <style>
+page {
+	background-color: white;
+	height: 100%;
+}
 button:after {  
 	border: none;  
 }
@@ -217,10 +232,10 @@ button:after {
 	  width: 100%;
   }
 .content {
+	height: 100%;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	justify-content: center;
 	padding-left: 60rpx;
 	padding-right: 60rpx;
 }
