@@ -3,9 +3,9 @@
 	export default {
 		globalData: {  
 			o2server: {
-				httpProtocol: 'http',
-				centerHost: 'dd.o2oa.net',
-				centerPort: 20030,
+				httpProtocol: 'https',
+				centerHost: 'sample.o2oa.net',
+				centerPort: 40030,
 				centerContext: '/x_program_center',
 			},
 			//webServer assembles

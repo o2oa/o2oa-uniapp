@@ -39,7 +39,8 @@
 			</scroll-view>
 			<view class="work-area">
 				<uni-list>
-					<uni-list-item  v-for="(item, index) in itemList" :key="index"  clickable  @click="openWebview(item.id, index)" >
+					<uni-list-item  v-for="(item, index) in itemList" :key="index"  clickable  @click="openWebview(item.id, index)" :title="item.title" :note="item.type" :rightText="item.date" />
+					<!-- <uni-list-item  v-for="(item, index) in itemList" :key="index"  clickable  @click="openWebview(item.id, index)" >
 						<template v-slot:body>
 							<view class="work-item">
 								<view class="work-title">
@@ -51,7 +52,7 @@
 								</view>
 							</view>
 						</template>
-					</uni-list-item>
+					</uni-list-item> -->
 				</uni-list>
 			</view>
 		</view>
@@ -233,7 +234,7 @@
 	}
 </script>
 
-<style>
+<style lang="scss">
 	.content {
 		display: flex;
 		flex-direction: column;
@@ -296,6 +297,12 @@
 	.work-title {
 		font-size: 32rpx;
 		color: #333333;
+		margin-left: 10rpx;
+	}
+	.uni-list-item__content-title {
+		font-size: $uni-font-size-base;
+		color: #3b4144;
+		overflow: hidden;
 		margin-left: 10rpx;
 	}
 	.work-sub {

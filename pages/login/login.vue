@@ -22,7 +22,15 @@
 				<button :class="sending? 'code-btn-sending':'code-btn'" @click="getCode()">{{getCodeText}}</button>
 			</view>
 			<button class="login-btn" @click="login">登录</button>
+			<view class="login-demo-area" v-if="isSample">
+			     <view >体验账号：</view>
+			     <view class="demo-people-link" @click="demoLogin(1)">开发人员1</view>
+			     <view class="demo-people-link" @click="demoLogin(2)">办公室机要</view>
+			     <view class="demo-people-link" @click="demoLogin(3)">办公室初核</view>
+			     <view class="demo-people-link" @click="demoLogin(4)">办公室主任</view>
+			 </view>
 		</view>
+		 
 	</view>
 </template>
 
@@ -42,10 +50,17 @@
 				sending: false, // 是否正在发送
 				countDownTime: 60,
 				getCodeText: '获取验证码',
-				countDownFun: null
+				countDownFun: null,
+				isSample: false // 是否是sample.o2oa.net服务器
 			}
 		},
 		onLoad: function() {
+			let o2server = getApp().globalData.o2server
+			if (o2server && o2server.centerHost === 'sample.o2oa.net') {
+				this.isSample = true
+			}else {
+				this.isSample = false
+			}
 			this.o2.Actions.loadO2Distribute().then(res=> {
 				console.log('加载distribute。。。。')
 				// 检查登录情况
@@ -155,6 +170,7 @@
 						this.o2.toast('请先输入验证码！')
 						return
 					}
+					this.o2.showLoading()
 					this.o2.Actions.load("x_organization_assemble_authentication").then(actions => {
 						let data = {
 							credential: username,
@@ -162,6 +178,7 @@
 						}
 						return actions.AuthenticationAction.codeLogin(data)
 					}).then(res => {
+						this.o2.hideLoading()
 						let user = res.data
 						if (user.token && user.token != '') {
 							uni.setStorageSync(this.o2.config.userKey, user)
@@ -170,6 +187,9 @@
 						}else {
 							this.o2.toast('登录失败！')
 						}
+					}).catch(err => {
+						console.log(err)
+						this.o2.hideLoading()
 					})
 				}else {
 					let password = this.password
@@ -177,6 +197,7 @@
 						this.o2.toast('请先输入密码！')
 						return
 					}
+					this.o2.showLoading()
 					this.o2.Actions.load("x_organization_assemble_authentication").then(actions => {
 						let data = {
 							credential: username,
@@ -184,6 +205,7 @@
 						}
 						return actions.AuthenticationAction.login(data)
 					}).then(res => {
+						this.o2.hideLoading()
 						let user = res.data
 						if (user && user.token && user.token != '') {
 							uni.setStorageSync(this.o2.config.userKey, user)
@@ -192,8 +214,58 @@
 						}else {
 							this.o2.toast(res.message || '登录失败！')
 						}
+					}).catch(err => {
+						console.log(err)
+						this.o2.hideLoading()
 					})
 				}
+			},
+			demoLogin(index) {
+				var param = {};
+				switch(index) {
+					case 1:
+					param = {
+						credential: 'kf1',
+						password: 'o2'
+					  }
+					  break
+					case 2:
+					param = {
+						credential:'办公室机要',
+						        password: 'o2'
+					  }
+					  break
+					case 3:
+					param = {
+						credential:'办公室初核',
+						        password: 'o2'
+					  }
+					  break
+					case 4:
+					param = {
+						credential:'办公室主任',
+						        password: 'o2'
+					  }
+					  break
+				}
+				this.o2.showLoading()
+				this.o2.Actions.load("x_organization_assemble_authentication").then(actions => {
+					let data = param
+					return actions.AuthenticationAction.login(data)
+				}).then(res => {
+					this.o2.hideLoading()
+					let user = res.data
+					if (user && user.token && user.token != '') {
+						uni.setStorageSync(this.o2.config.userKey, user)
+						uni.setStorageSync(this.o2.config.tokenKey, user.token)
+						this.gotoMain()
+					}else {
+						this.o2.toast(res.message || '登录失败！')
+					}
+				}).catch(err => {
+					console.log(err)
+					this.o2.hideLoading()
+				})
 			},
 			gotoMain() {
 				uni.reLaunch({
@@ -327,5 +399,17 @@ button:after {
 	border-radius: 20rpx;
 	margin-top: 100rpx;
 	text-align: center;
+}
+.login-demo-area {
+	margin-top: 30rpx;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+.demo-people-link {
+	color: #00c0fa;
+    text-decoration: underline;
+	margin-top: 20rpx;
 }
 </style>

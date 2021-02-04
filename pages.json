@@ -4,9 +4,12 @@
 		    "path" : "pages/login/login",
 		    "style" :                                                                                    
 		    {
-				"titleNView": false,
 		        "navigationBarTitleText": "",
-		        "enablePullDownRefresh": false
+		        "enablePullDownRefresh": false,
+				"navigationStyle":"custom",
+				"app-plus":{
+				       "titleNView":false
+				       }
 		    }
 		    
 		},

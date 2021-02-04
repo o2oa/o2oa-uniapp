@@ -51,7 +51,7 @@
 		<!--  -->
 		 <!-- 提交信息 -->
 		 <uni-popup id="dialogInput" ref="dialogInput" type="dialog">
-		 	<uni-popup-dialog mode="input" :title="dialogTitle" :value="dialogValue" placeholder="" @confirm="dialogInputConfirm"></uni-popup-dialog>
+		 	<uni-popup-dialog mode="input" :title="dialogTitle" :value="dialogValue" @confirm="dialogInputConfirm"></uni-popup-dialog>
 		 </uni-popup>
 		
 		 
