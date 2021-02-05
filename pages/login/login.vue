@@ -55,7 +55,7 @@
 			}
 		},
 		onLoad: function() {
-			let o2server = getApp().globalData.o2server
+			let o2server = this.o2.o2server
 			if (o2server && o2server.centerHost === 'sample.o2oa.net') {
 				this.isSample = true
 			}else {

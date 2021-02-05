@@ -1,5 +1,11 @@
 
 var o2 = {
+	o2server: {
+		httpProtocol: 'https',
+		centerHost: 'sample.o2oa.net',
+		centerPort: 40030,
+		centerContext: '/x_program_center',
+	},
 	config: {
 		tokenKey: 'o2-token',
 		userKey : 'o2-user',
@@ -132,7 +138,7 @@ var o2 = {
 				}
 				o2.Actions.o2Request(o2req).then(res => {
 					if (res.data) {
-						getApp().globalData.o2Distribute = res.data
+						o2.o2Distribute = res.data
 						uni.setStorageSync(o2.config.distributeKey, res.data)
 						resolve(true)
 					}else {
@@ -194,33 +200,33 @@ var o2 = {
 		},
 		'getModuleHost': function(root) {
 			var module = null
-			if (getApp().globalData.o2Distribute) {
-				module = getApp().globalData.o2Distribute.assembles[root]
+			if (o2.o2Distribute) {
+				module = o2.o2Distribute.assembles[root]
 			}else {
 				var o2Distribute= uni.getStorageSync(o2.config.distributeKey)
 				if (o2Distribute) {
-					getApp().globalData.o2Distribute = o2Distribute
+					o2.o2Distribute = o2Distribute
 					module = o2Distribute.assembles[root]
 				}
 			}
 			if (module) {
-				var o2server = getApp().globalData.o2server
+				var o2server = o2.o2server
 				return o2server.httpProtocol + '://' + module['host'] + ':' + module['port']+ module['context'];	
 			}else {
 				return null
 			}
 		},
 		getWebBaseUrl: function () {
-			if (getApp().globalData.o2Distribute) {
-				let o2server = getApp().globalData.o2server
-				let webServer = getApp().globalData.o2Distribute.webServer
+			if (o2.o2Distribute) {
+				let o2server = o2.o2server
+				let webServer = o2.o2Distribute.webServer
 				return o2server.httpProtocol + "://" + webServer["host"] + ":" + webServer["port"]
 			} else {
 				return null
 			}
 		},
 		'getCenterUrl' : function() {
-			var o2server = getApp().globalData.o2server
+			var o2server = o2.o2server
 			return o2server.httpProtocol + '://' + o2server.centerHost + ':' + o2server.centerPort + o2server.centerContext + '/jaxrs/distribute/webserver/assemble/source/' + o2server.centerHost;
 		},
 		_createMethod: function(service){

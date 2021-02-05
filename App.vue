@@ -1,17 +1,6 @@
 <script>
 	
 	export default {
-		globalData: {  
-			o2server: {
-				httpProtocol: 'https',
-				centerHost: 'sample.o2oa.net',
-				centerPort: 40030,
-				centerContext: '/x_program_center',
-			},
-			//webServer assembles
-			// o2Distribute: {
-			// }
-		},
 	    onLaunch() {
 			console.log('App onLaunch')
 		},

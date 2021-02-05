@@ -20,7 +20,7 @@
 				title: title
 			})
 			let token = uni.getStorageSync(this.o2.config.tokenKey);
-			this.url = this.o2.Actions.getWebBaseUrl() + '/x_desktop/cmsdocMobile.html?id='+id+'&x-token='+token
+			this.url = this.o2.Actions.getWebBaseUrl() + '/x_desktop/cmsdocMobile.html?id='+id+'&x-token='+token+'#wechat_redirect'
 		},
 		methods: {
 			
