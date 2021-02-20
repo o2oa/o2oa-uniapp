@@ -5,9 +5,9 @@ import { o2 } from './common/o2.js'
 Vue.config.productionTip = false
 // O2OA 服务器地址端口配置
 o2.o2server = {
-		httpProtocol: 'http',
-		centerHost: 'dd.o2oa.net',
-		centerPort: 20030,//中心服务器端口
+		httpProtocol: 'https',
+		centerHost: 'sample.o2oa.net',
+		centerPort: 40030,//中心服务器端口
 		centerContext: '/x_program_center', //中心服务器上下文
 	}
 	

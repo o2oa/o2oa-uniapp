@@ -12,7 +12,7 @@
 
 ## 源码说明
 
-本项目是通过O2OA提供的接口开发的一个uniapp源码模版，为了方便unapp开发者参考开发O2OA为基础的项目而用。
+本项目是通过O2OA提供的接口开发的一个uniapp源码模版，为了方便uniapp开发者参考开发O2OA为基础的项目而用。
 
 
 
@@ -28,9 +28,9 @@ import { o2 } from './common/o2.js'
 Vue.config.productionTip = false
 // O2OA 服务器地址端口配置
 o2.o2server = {
-		httpProtocol: 'http',
-		centerHost: 'dd.o2oa.net',
-		centerPort: 20030,//中心服务器端口
+		httpProtocol: 'https',
+		centerHost: 'sample.o2oa.net',
+		centerPort: 40030,//中心服务器端口
 		centerContext: '/x_program_center', //中心服务器上下文
 	}
 	
