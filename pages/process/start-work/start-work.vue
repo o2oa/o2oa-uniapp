@@ -14,6 +14,9 @@
 		<!-- 身份选中-->
 		<uni-popup id="dialogIdentity" ref="dialogIdentity" type="dialog">
 			<view class="identity-selector">
+				<view class="identity-title">
+					选择身份
+				</view>
 				<view class="identity-list">
 					<radio-group @change="radioChange">
 						<label class="identity-list-cell identity-list-cell-pd" v-for="(item, index) in identityList" :key="item.distinguishedName">
@@ -55,6 +58,9 @@
 			}
 		},
 		onLoad() {
+			uni.setNavigationBarTitle({
+				title: '启动流程'
+			})
 			this.loadApplicatin()
 		},
 		methods: {
@@ -215,6 +221,12 @@
 	display: flex;
 	flex-direction: column;
 	padding: 20rpx 30rpx;
+}
+.identity-title {
+	font-size: 32rpx;
+	text-align: center;
+	margin: 20rpx;
+	font-weight: bold;
 }
 .identity-list {
 	background-color: #FFFFFF;
