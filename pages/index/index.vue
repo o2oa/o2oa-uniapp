@@ -1,5 +1,8 @@
 <template>
 		<view class="content">
+			<view class="process-add" @click="newProcessWork">
+				<image src="../../static/img/icon_index_add.png" class="process-add-image"></image>
+			</view>
 			<swiper class="swiper" indicator-dots="true" indicator-color="rgb(255,255,255)" autoplay="true" interval="2000" duration="500" v-if="bannerList.length>0">
 				<swiper-item v-for="(item, index) in bannerList" :key="index">
 					<view class="banner" @click="openHotNews(index)">
@@ -10,24 +13,24 @@
 			</swiper>
 			<image v-if="bannerList.length==0" mode="scaleToFill" style="width: 100%;height: 50vw;" src="../../static/img/banner_default.png"></image>
 			<view class="app-list">
-				<view class="app-item" >
+				<view class="app-item" @click="openList('task')">
 					<image src="../../static/img/icon_task.png" class="app-item-img"></image>
 					<text class="app-item-title">待办</text>
 				</view>
-				<view class="app-item" >
+				<view class="app-item" @click="openList('taskCompleted')">
 					<image src="../../static/img/icon_task_completed.png" class="app-item-img"></image>
 					<text class="app-item-title">已办</text>
 				</view>
-				<view class="app-item" >
+				<view class="app-item" @click="openList('read')">
 					<image src="../../static/img/icon_read.png" class="app-item-img"></image>
 					<text class="app-item-title">待阅</text>
 				</view>
-				<view class="app-item" >
+				<view class="app-item" @click="openList('readCompleted')">
 					<image src="../../static/img/icon_read_completed.png" class="app-item-img"></image>
 					<text class="app-item-title">已阅</text>
 				</view>
 			</view>
-			<scroll-view scroll-x class="bg-white nav">
+			<scroll-view scroll-x class="bg-white nav margin-top-sm">
 			  <view class="flex text-center">
 			    <view :class="0==currentTab? 'cu-item flex-sub text-red cur':'cu-item flex-sub'" @click="changeTab(0)">
 			      信息中心
@@ -101,6 +104,12 @@
 			this.loadList(false)
 		},
 		methods: {
+			// 新建工作
+			newProcessWork() {
+				uni.navigateTo({
+					url: '../process/start-work/start-work'
+				})
+			},
 			onRefresh() {
 				uni.startPullDownRefresh()
 				this.loadList(true)
@@ -114,6 +123,7 @@
 					this.loadWorkList(isRefresh)
 				}
 			},
+			//切换信息中心和办公中心
 			changeTab(tab) {
 				if (tab === 0) {
 					this.currentTab = 0
@@ -129,7 +139,7 @@
 				}
 				this.o2.Actions.load("x_processplatform_assemble_surface").then(actions => {
 					//参数 page， count ， data
-					return actions.TaskAction.	V2ListNext(this.lastId, this.itemCount, {})
+					return actions.TaskAction.V2ListNext(this.lastId, this.itemCount, {})
 				}).then(res => {
 					let list = res.data
 					var items = []
@@ -230,6 +240,11 @@
 				}
 				
 			},
+			openList(type) {
+				uni.navigateTo({
+					url: '../process/list/list?type='+type
+				})
+			}
 		}
 	}
 </script>
@@ -241,8 +256,21 @@
 		align-items: center;
 		justify-content: center;
 	}
+	.process-add {
+		width: 84rpx;
+		height: 84rpx;
+		position: fixed;
+		top: 24rpx;
+		right: 24rpx;
+		z-index: 999;
+	}
+	.process-add-image {
+		width: 84rpx;
+		height: 84rpx;
+	}
 	.swiper {
 		width: 100%;
+		height: 50vw;
 	}
 	.banner {
 		height: 50vw;

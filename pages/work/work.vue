@@ -14,12 +14,18 @@
 		},
 		onLoad(options) {
 			var workid = options.workid
+			var workCompleted = options.workCompleted
 			var title = options.title
 			uni.setNavigationBarTitle({
 				title: title
 			})
 			let token = uni.getStorageSync(this.o2.config.tokenKey);
-			this.url = this.o2.Actions.getWebBaseUrl() + '/x_desktop/workmobilewithaction.html?workid='+workid+'&x-token='+token+'#wechat_redirect';
+			if (!workCompleted) {
+				this.url = this.o2.Actions.getWebBaseUrl() + '/x_desktop/workmobilewithaction.html?workid='+workid+'&x-token='+token+'#wechat_redirect';
+			}else {
+				this.url = this.o2.Actions.getWebBaseUrl() + '/x_desktop/workmobilewithaction.html?workcompletedid='+workCompleted+'&x-token='+token+'#wechat_redirect';
+			}
+			
 		},
 		methods: {
 			
