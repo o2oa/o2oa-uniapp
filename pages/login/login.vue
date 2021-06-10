@@ -24,10 +24,10 @@
 			<button class="login-btn" @click="login">登录</button>
 			<view class="login-demo-area" v-if="isSample">
 			     <view >体验账号：</view>
-			     <view class="demo-people-link" @click="demoLogin(1)">开发人员1</view>
-			     <view class="demo-people-link" @click="demoLogin(2)">办公室机要</view>
-			     <view class="demo-people-link" @click="demoLogin(3)">办公室初核</view>
-			     <view class="demo-people-link" @click="demoLogin(4)">办公室主任</view>
+			     <view class="demo-people-link" @click="demoLogin(1)">开发部经理</view>
+			     <view class="demo-people-link" @click="demoLogin(2)">开发部员工2</view>
+			     <view class="demo-people-link" @click="demoLogin(3)">财务部员工1</view>
+			     <!-- <view class="demo-people-link" @click="demoLogin(4)">办公室主任</view> -->
 			 </view>
 		</view>
 		 
@@ -225,19 +225,19 @@
 				switch(index) {
 					case 1:
 					param = {
-						credential: 'kf1',
+						credential: '开发部经理',
 						password: 'o2'
 					  }
 					  break
 					case 2:
 					param = {
-						credential:'办公室机要',
+						credential:'开发部员工2',
 						        password: 'o2'
 					  }
 					  break
 					case 3:
 					param = {
-						credential:'办公室初核',
+						credential:'财务部员工1',
 						        password: 'o2'
 					  }
 					  break
